@@ -33,7 +33,38 @@ export default function Card(props) {
     const title = props.data.videoInfo.snippet.title;
     const description = props.data.videoInfo.snippet.localized.description;
 
-    navigate(`/video/${urlid}/${title}/${encodeURIComponent(description)}`);
+    const setdata = async (e) => {
+      try {
+        let responce = await fetch("http://172.31.31.124:5000/api/setviews", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            videoid: props.data._id,
+            videotitle: props.data.videoInfo.snippet.title,
+          }),
+        });
+
+        let json = await responce.json();
+        if (json.success) {
+          console.log(typeof "json.data");
+          navigate(
+            `/video/${urlid}/${title}/${encodeURIComponent(description)}/${
+              json.data.views
+            }`
+          );
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth", // Use 'smooth' for smooth scrolling
+          });
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    setdata();
   };
   const dateInfo = getYearsMonthsAndDays(
     props.data.videoInfo.snippet.publishedAt

@@ -28,6 +28,7 @@ app.use(express.json());
 app.use("/api", require("./Routes/getdata_mongo"));
 app.use("/api", require("./Routes/getsqldata"));
 app.use("/api", require("./Routes/UserHandling"));
+app.use("/api", require("./Routes/setVideoData"));
 
 mongodb();
 mysql();

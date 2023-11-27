@@ -16,7 +16,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route
-            path="/video/:urlid/:title/:description"
+            path="/video/:urlid/:title/:description/:views"
             element={<VideoScreen />}
           />
         </Routes>

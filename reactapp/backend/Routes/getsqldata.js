@@ -4,7 +4,6 @@ const router = express.Router();
 
 router.get("/sqldata", async (req, res) => {
   try {
-    
     const con = await mysql.createConnection({
       host: "localhost",
       user: "root",
@@ -12,7 +11,10 @@ router.get("/sqldata", async (req, res) => {
       database: "hospitaldatabase",
     });
 
-    const [rows] = await con.execute("SELECT * FROM patientdata");
+    const [rows] = await con.execute(
+      "SELECT * FROM patientdata WHERE patientid = ?",
+      ["p7"]
+    );
     const data = Array.from(rows); // Convert rows to a plain array
     res.json(data);
   } catch (error) {

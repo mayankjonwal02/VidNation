@@ -3,11 +3,14 @@ import Navbar from "../components/Navbar";
 import ReactPlayer from "react-player";
 import Card from "../components/Card";
 import { useParams } from "react-router-dom";
+import { FaSearch } from "react-icons/fa";
 //"d-sm-block d-lg-flex">
 export default function VideoScreen() {
-  const { urlid, title, description } = useParams();
+  const { urlid, title, description, views } = useParams();
   console.log(title);
+  const [search, setSearch] = useState("");
   const [VideoData, setdata] = useState([]);
+  const [FilteredVideoData, Filteredsetdata] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,6 +44,42 @@ export default function VideoScreen() {
   return (
     <div>
       <Navbar></Navbar>
+      <div
+        className="container "
+        style={{ maxWidth: "800px", marginTop: "20px", marginBottom: "20px" }}
+      >
+        <form class="d-flex" role="search">
+          <input
+            class="form-control me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = "pink";
+            }}
+          />
+          <button
+            class="btn "
+            style={{ background: "#FF99FF" }}
+            onClick={(e) => {
+              e.preventDefault();
+              Filteredsetdata(
+                VideoData.filter((data, index) =>
+                  data.videoInfo.snippet.title
+                    .toLowerCase()
+                    .includes(search.toLocaleLowerCase())
+                )
+              );
+            }}
+          >
+            <FaSearch size={30} color="#FF00CC" />
+          </button>
+        </form>
+      </div>
 
       <div className=" d-flex flex-lg-row flex-column ">
         <div className="   p-2  flex-fill col-lg-8">
@@ -58,6 +97,16 @@ export default function VideoScreen() {
           >
             {decodeURIComponent(description)}
           </div>
+          <div
+            className="views fw-bold mt-2 fs-4"
+            style={{ maxHeight: "100px", overflow: "auto" }}
+          >
+            {views === "1" || views === "0" ? (
+              <>{views} View</>
+            ) : (
+              <>{views} Views</>
+            )}
+          </div>
         </div>
         <div className="  flex-grow-1 col-lg-4">
           <div
@@ -65,8 +114,8 @@ export default function VideoScreen() {
             // style={{ minWidth: "200px", overflow: "auto" }}
           >
             <div className="row">
-              {VideoData.length !== 0 ? (
-                VideoData.map((data, index) => (
+              {FilteredVideoData.length !== 0 ? (
+                FilteredVideoData.map((data, index) => (
                   <div key={index}>
                     <Card data={data}></Card>
                   </div>
