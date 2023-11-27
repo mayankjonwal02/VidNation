@@ -3,8 +3,8 @@ import { FcClapperboard } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const [email, setemail] = useState("jonwal.1@iitj.ac.in");
-  const [password, setpassword] = useState("123456");
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
   const [confirmpassword, setconfirmpassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

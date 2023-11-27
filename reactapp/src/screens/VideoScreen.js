@@ -14,19 +14,74 @@ export default function VideoScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let response = await fetch(
-          "http://172.31.31.124:5000/api/getMongoData",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        let data = await response.json();
-        console.log(data);
+        let response = localStorage.getItem("email")
+          ? (async () => {
+              let apiResponse = await fetch(
+                "http://172.31.57.99:8000/getvideos/",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    email: localStorage.getItem("email"),
+                    title: title,
+                  }),
+                }
+              );
 
-        setdata(data.slice(0, 10));
+              let data = await apiResponse.json();
+              console.log(data.data);
+
+              setdata(data.data);
+              Filteredsetdata(data.data);
+              try {
+                let ViewsResponse = await fetch(
+                  "http://172.31.31.124:5000/api/getviews/",
+                  {
+                    method: "GET",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+                let getdata = await ViewsResponse.json();
+                let videoidlist = getdata.data.map((obj) => obj.id);
+                data.data.forEach((element) => {
+                  if (videoidlist.includes(element._id)) {
+                    element.views = getdata.data.find(
+                      (obj) => obj.id === element._id
+                    ).views;
+                  } else {
+                    element.views = 0;
+                  }
+
+                  let alldata = data.data.sort((a, b) => b.views - a.views);
+                  console.log(alldata);
+                  setdata(alldata);
+                  Filteredsetdata(alldata);
+                });
+              } catch (error) {
+                console.log(error.message);
+              }
+            })()
+          : (async () => {
+              let apiResponse = await fetch(
+                "http://172.31.31.124:5000/api/getMongoData",
+                {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+
+              let data = await apiResponse.json();
+              console.log(data);
+
+              setdata(data);
+              Filteredsetdata(data);
+            })();
         window.scrollTo({
           top: 0,
           behavior: "smooth", // Use 'smooth' for smooth scrolling
@@ -67,13 +122,77 @@ export default function VideoScreen() {
             style={{ background: "#FF99FF" }}
             onClick={(e) => {
               e.preventDefault();
-              Filteredsetdata(
-                VideoData.filter((data, index) =>
-                  data.videoInfo.snippet.title
-                    .toLowerCase()
-                    .includes(search.toLocaleLowerCase())
-                )
-              );
+              let responce = !localStorage.getItem("email")
+                ? Filteredsetdata(
+                    VideoData.filter((data, index) =>
+                      data.videoInfo.snippet.title
+                        .toLowerCase()
+                        .includes(search.toLocaleLowerCase())
+                    )
+                  )
+                : (async () => {
+                    setdata([]);
+                    Filteredsetdata([]);
+                    let apiResponse = await fetch(
+                      "http://172.31.57.99:8000/getvideos/",
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          email: localStorage.getItem("email"),
+                          title: search,
+                        }),
+                      }
+                    );
+
+                    let data = await apiResponse.json();
+                    console.log(data.data);
+
+                    setdata(data.data);
+                    Filteredsetdata(data.data);
+                    console.log(data.data);
+
+                    data.data.forEach((element) => {
+                      element.views = 1;
+                    });
+                    data.data.forEach((element) => {
+                      console.log(element.views);
+                    });
+
+                    try {
+                      let ViewsResponse = await fetch(
+                        "http://172.31.31.124:5000/api/getviews/",
+                        {
+                          method: "GET",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                        }
+                      );
+                      let getdata = await ViewsResponse.json();
+                      let videoidlist = getdata.data.map((obj) => obj.id);
+                      data.data.forEach((element) => {
+                        if (videoidlist.includes(element._id)) {
+                          element.views = getdata.data.find(
+                            (obj) => obj.id === element._id
+                          ).views;
+                        } else {
+                          element.views = 0;
+                        }
+
+                        let alldata = data.data.sort(
+                          (a, b) => b.views - a.views
+                        );
+                        console.log(alldata);
+                        setdata(alldata);
+                        Filteredsetdata(alldata);
+                      });
+                    } catch (error) {
+                      console.log(error.message);
+                    }
+                  })();
             }}
           >
             <FaSearch size={30} color="#FF00CC" />

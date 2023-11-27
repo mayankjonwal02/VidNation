@@ -160,7 +160,7 @@ export default function Signup() {
 
                 <div className="container d-flex justify-content-center p-4">
                   <button
-                    type="submit"
+                    // type="submit"
                     className="btn btn-primary"
                     onClick={handleSubmit}
                   >

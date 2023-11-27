@@ -41,4 +41,23 @@ router.post("/setviews", async (req, res) => {
   }
 });
 
+router.get("/getviews", async (req, res) => {
+  try {
+    const con = await Mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      password: "jonwalmayank02",
+      database: "mdntube",
+    });
+
+    let [videodata] = await con.execute(
+      "SELECT id,views FROM videoclickthrough"
+    );
+    console.log("success");
+    res.json({ success: true, message: "success", data: videodata });
+  } catch (error) {
+    console.log(error.message);
+    res.json({ success: false, message: error.message });
+  }
+});
 module.exports = router;
