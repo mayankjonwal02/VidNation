@@ -49,6 +49,7 @@ export default function Card(props) {
         let json = await responce.json();
         if (json.success) {
           console.log(typeof "json.data");
+
           navigate(
             `/video/${urlid}/${title}/${encodeURIComponent(description)}/${
               json.data.views

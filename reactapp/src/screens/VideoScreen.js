@@ -33,8 +33,8 @@ export default function VideoScreen() {
               let data = await apiResponse.json();
               console.log(data.data);
 
-              setdata(data.data);
-              Filteredsetdata(data.data);
+              // setdata(data.data);
+              // Filteredsetdata(data.data);
               try {
                 let ViewsResponse = await fetch(
                   "http://172.31.31.124:5000/api/getviews/",
