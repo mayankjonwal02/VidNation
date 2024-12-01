@@ -1,0 +1,7 @@
+pymongo
+py2neo
+nltk
+mysql-connector-python
+django
+djangorestframework
+asgiref
